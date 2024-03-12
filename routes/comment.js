@@ -1,35 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
-const fetchuser = require("../middleware/fetchuser");
-const Contact = require("../models/Contact");
+const Comment = require("../models/Comment");
 
 router.post(
-  "/createcontact",
+  "/addcomment",
   [
-    body("name", "somthing went wrong").notEmpty(),
-    body("email", "Invalid email id").isEmail(),
-    body("message", "message must be atleast 5 characters").isLength({
+    body("comment", "comment must be atleast 5 characters").isLength({
       min: 5,
     }),
   ],
   async (req, res) => {
     let success = false;
-    const { name, email, message } = req.body;
+    const { comment } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ success, errors: errors.array() });
     }
     try {
-      const contact = Contact({
-        name,
-        email,
-        message,
+      const addComment = Comment({
+        comment
       });
-      const newcontact = await contact.save();
+      const newComment = await addComment.save();
       success = true;
-      res.json({ success, newcontact });
+      res.json({ success, newComment });
     } catch (error) {
       console.log(error);
       res.status(500).json({
@@ -39,4 +34,9 @@ router.post(
   }
 );
 
+router.get("/comments", async (req, res) => {
+const comment = await  Comment.find().sort({ date:-1});
+res.json(comment);
+
+})
 module.exports = router;
