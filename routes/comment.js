@@ -36,7 +36,7 @@ router.post(
 
 router.get("/comments", async (req, res) => {
 const comment = await  Comment.find().sort({ date:-1});
-res.json(comment);
+res.json({comment,success:true});
 
 })
 module.exports = router;
