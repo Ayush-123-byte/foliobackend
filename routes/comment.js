@@ -7,12 +7,15 @@ router.post(
   "/addcomment",
   [
     body("comment", "comment must be atleast 5 characters").isLength({
+      min:2 ,
+    }),
+    body("name", "comment must be atleast 5 characters").isLength({
       min: 5,
     }),
   ],
   async (req, res) => {
     let success = false;
-    const { comment } = req.body;
+    const { name,comment } = req.body;
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -20,7 +23,7 @@ router.post(
     }
     try {
       const addComment = Comment({
-        comment
+        comment,name
       });
       const newComment = await addComment.save();
       success = true;
